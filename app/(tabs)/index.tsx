@@ -10,20 +10,20 @@ import {
   Dimensions,
 } from "react-native";
 import { Badge, Button, Text } from "~/components/ui";
-import { Banner, Movie, Genre } from "~/types";
+import { Banner, Movie, Genre, Media } from "~/types";
 import { cn, formatDate, getGenres } from "~/lib/utils";
 import { TopSlider } from "~/components/widgets";
 import {
   useNowPlayingMovies,
   usePopularMovies,
-  useTopRatedMovies,
+  useTrendingMedia,
   useUpcomingMovies,
 } from "~/api";
 import { API_POSTER_IMAGE_URL } from "@env";
 import { Calendar, PlayCircle } from "iconsax-react-nativejs";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { genres } from "~/api/genres";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 // Placeholder data arrays
 const bannerData: Banner[] = [
@@ -40,13 +40,11 @@ const bannerData: Banner[] = [
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { isDarkColorScheme } = useColorScheme();
-  const [selectedCategory, setSelectedCategory] = useState<Genre["id"]>(
-    genres[0].id
-  );
 
   const { data: nowPlayingMovies = [] } = useNowPlayingMovies();
-  const { data: topRatedMovies = [] } = useTopRatedMovies();
+  const { data: trendingMovies = [] } = useTrendingMedia();
   const { data: popularMovies = [] } = usePopularMovies();
   const { data: upcomingMovies = [] } = useUpcomingMovies();
 
@@ -109,23 +107,19 @@ export default function HomeScreen() {
   );
 
   // only log when you actually tap
-  const handlePress = (id: Genre["id"]) => {
-    console.log("Selected category:", id, typeof id);
-    setSelectedCategory(id);
+  const handlePress = (id: string) => {
+    router.push(`/prefiltered/${id}`);
   };
 
   const renderCategory = ({ item }: { item: Genre }) => {
-    const isSelected = item.id === selectedCategory;
-
     return (
-      <Badge asChild variant={isSelected ? "secondary" : "gray"}>
-        <TouchableOpacity onPress={() => handlePress(item.id)}>
-          <Text
-            className={cn(
-              "text-[12px] leading-[18px] font-semibold",
-              isSelected ? "text-black" : "text-foreground"
-            )}
-          >
+      <Badge asChild variant={"gray"}>
+        <TouchableOpacity
+          onPress={() =>
+            handlePress(item.tvId ? item.id + "+" + item.tvId : "" + item.id)
+          }
+        >
+          <Text className={cn("text-[12px] leading-[18px] font-semibold")}>
             {item.name}
           </Text>
         </TouchableOpacity>
@@ -136,7 +130,7 @@ export default function HomeScreen() {
   const renderMovie = ({ item }: { item: Movie }) => (
     <Link
       href={{
-        pathname: "/movies/[id]",
+        pathname: "/media/[id]",
         params: { id: item.id },
       }}
     >
@@ -152,6 +146,28 @@ export default function HomeScreen() {
       </View>
     </Link>
   );
+  const renderMedia = ({ item }: { item: Media }) => {
+    console.log("items", item);
+    return (
+      <Link
+        href={{
+          pathname: "/media/[id]",
+          params: { id: item.id, type: "title" in item ? "movie" : "tv" },
+        }}
+      >
+        <View className="w-[100px] shrink-0">
+          <Image
+            source={{ uri: API_POSTER_IMAGE_URL + item.poster_path }}
+            className="w-30 h-44 rounded-md"
+            resizeMode="cover"
+          />
+          <Text className="text-foreground mt-2 text-sm" numberOfLines={1}>
+            {item.name || item.title}
+          </Text>
+        </View>
+      </Link>
+    );
+  };
 
   const renderPopularMovie = ({ item }: { item: Movie }) => {
     const genres = getGenres(item.genre_ids);
@@ -256,11 +272,11 @@ export default function HomeScreen() {
         </View>
         {/* Top Rated Section */}
         <View>
-          <TopSlider title="Top Rated" />
+          <TopSlider title="Trending" />
           <FlatList
-            data={topRatedMovies?.results || []}
+            data={trendingMovies?.results || []}
             keyExtractor={(item: Movie) => item.id + ""}
-            renderItem={renderMovie}
+            renderItem={renderMedia}
             horizontal
             contentContainerClassName="pl-3 gap-3"
             showsHorizontalScrollIndicator={false}

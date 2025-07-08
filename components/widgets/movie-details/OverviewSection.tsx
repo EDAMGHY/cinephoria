@@ -45,7 +45,7 @@ export const OverviewSection = ({
   const renderMovie = ({ item }: { item: Movie }) => (
     <Link
       href={{
-        pathname: "/movies/[id]",
+        pathname: "/media/[id]",
         params: { id: item.id },
       }}
     >

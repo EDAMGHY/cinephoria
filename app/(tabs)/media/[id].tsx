@@ -45,7 +45,7 @@ const detailsTabs = [
 const MovieDetailsScreen = () => {
   const router = useRouter();
   const [tab, setTab] = useState(detailsTabs[0].id);
-  const { id } = useLocalSearchParams();
+  const { id, type } = useLocalSearchParams();
   const { data } = useSingleMovies<MovieDetail>(+id);
 
   const { data: credits } = useSingleMovies<MovieCredits>(+id, "credits");
@@ -71,6 +71,20 @@ const MovieDetailsScreen = () => {
       (video) => video.type === "Trailer" && video.site === "YouTube"
     );
   }, [videos]);
+
+  console.log("typetypetype", type);
+
+  if (!data) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-foreground">
+          Loading...
+          {id}
+          {type}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <DetailsParallax

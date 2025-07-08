@@ -195,10 +195,19 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="movies/[id]"
+          name="media/[id]"
           options={{
-            title: "Movies Details",
+            title: "Media Details",
             headerShown: false,
+            tabBarItemStyle: {
+              display: "none",
+            },
+          }}
+        />
+        <Tabs.Screen
+          name="prefiltered/[id]"
+          options={{
+            title: "Pre Filtered Search",
             tabBarItemStyle: {
               display: "none",
             },

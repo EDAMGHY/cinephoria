@@ -48,6 +48,7 @@ export interface BelongsToCollection {
 
 export interface Genre {
   id: number;
+  tvId?: number;
   name: string;
 }
 
@@ -265,4 +266,52 @@ export interface MovieDetailImages {
   backdrops: ImageData[];
   logos: ImageData[];
   posters: ImageData[];
+}
+
+export interface PaginatedList<T> {
+  page: number;
+  results: T[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface TvShow {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: number[];
+  id: number;
+  name: string;
+  origin_country: string[];
+  original_language: string;
+  original_name: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+}
+
+export interface Media {
+  /** Defaults to true */
+  adult: boolean;
+  backdrop_path: string;
+  /** Defaults to 0 */
+  id: number;
+  title: string;
+  name: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  poster_path: string;
+  media_type: string;
+  genre_ids: number[];
+  /** Defaults to 0 */
+  popularity: number;
+  release_date: string;
+  /** Defaults to true */
+  video: boolean;
+  /** Defaults to 0 */
+  vote_average: number;
+  /** Defaults to 0 */
+  vote_count: number;
 }

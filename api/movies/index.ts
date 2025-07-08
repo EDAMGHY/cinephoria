@@ -33,14 +33,14 @@ export const usePopularMovies = () =>
   useQuery(["popular_movies"], () => getPopularMovies());
 
 // -----------------------------------
-// TopRated Movies
-export const getTopRatedMovies = async () => {
-  const { data } = await api.get("/movie/top_rated?language=en-US&page=1");
+// Trending Media
+export const getTrendingMedia = async () => {
+  const { data } = await api.get("/trending/all/week?page=1");
   return data;
 };
 
-export const useTopRatedMovies = () =>
-  useQuery(["top_rated_movies"], () => getTopRatedMovies());
+export const useTrendingMedia = () =>
+  useQuery(["trending_movies"], () => getTrendingMedia());
 
 // -----------------------------------
 // Single Movie Details

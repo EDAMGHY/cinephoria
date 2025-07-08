@@ -8,3 +8,4 @@ export * from "./tooltip";
 export * from "./progress";
 export * from "./input";
 export * from "./image";
+export * from "./grid";
